@@ -2,6 +2,7 @@ options(scipen=999)
 library(janitor)
 library(tidyverse)
 
+library(usethis)
 
 #Bases de datos RETC-MUNICIPALES----
 retc17<-read.csv2("2017.csv", stringsAsFactors = FALSE)
