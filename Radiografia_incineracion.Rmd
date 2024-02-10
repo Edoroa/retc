@@ -1,0 +1,55 @@
+---
+title: "Radiografía de la Incineración"
+author: "Matías Roa"
+date: "'r format(Sys.time(), '%d %B %Y')'"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(scipen=999)
+library(extrafont)
+library(showtext)
+library(extrafontdb)
+library(pagedown)
+library(forecast)
+library(ggrepel)
+library(viridis)
+library(tidyverse)
+library(sf)
+library(ggplot2)
+library(ggtext)
+library(ggthemes)
+library(RColorBrewer)
+library(ggsci)
+library(scales)
+library(plotly)
+library(Cairo)
+library(janitor)
+library(wesanderson) #names(wes_palettes)
+library(hrbrthemes)
+```
+
+#Radiografía de la Incineración en Chile
+
+##Notas
+
+Los datos utilizados para este informe corresponden a las bases de datos del Registro de Emisiones y Transferencia (RETC) correspondientes a los años ’17, ‘18, ‘19,’20 obtenidas del sitio web.
+
+En cuanto a los datos, estos corresponden a los datos ingresados por Ventanilla única por Municipios e Industrias. ( Desarrollar más este punto).
+
+Respecto a los datos analizados, las bases de datos anuales acumulan un total de 128.997 registros, con información cuantitativa y cualitativa sobre la gestión de residuos generados por  dos fuentes: Residuos Sólidos Municipales (RSM) y Residuos Industriales No peligrosos (RINP), estos a su vez son gestionados de 68 tipos de tratamiento de residuos, se identificaron 4 relativos a la Incineración de residuos, estos son:
+
+-Co-procesamiento
+-Co-Incineración.
+-Incineración con recuperación de energía.
+-Incineración sin recuperación de energía.
+
+De este total de datos, es posible identificar un total de 2.772 registros relativos a tratamiento por medio de la incineración según la definición establecida por Listado Europeo de Residuos (LER), el cual en su capitulo 1501
+
+
+Datos sobre la RETC	
+
+Dentro de los años analizados. El total de residuos registrados asciende a 'r sum(cantidad_totales)'  toneladas. Con un promedio anual de 18.5 millones, tratadas en un total de 68 formas, las 10 más comunes se pueden ver en la tabla N°1
+
+```{r setup, include=FALSE}
