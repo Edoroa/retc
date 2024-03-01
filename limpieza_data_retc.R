@@ -44,6 +44,8 @@ retc21_uno<-retc21 %>%
 retc22_uno<-retc22 %>% 
   clean_names()
 
+rm(retc17, retc18, retc19, retc20, retc21, retc22)
+
 # RETC2017------
 
 names(retc17_uno)
@@ -66,12 +68,16 @@ retc17_uno<-retc17_uno%>%
 write.csv2(retc17_uno,file="retc17_uno.csv", row.names = FALSE)
 
 # RETC2018--------
+
+
+glimpse(retc18_uno)
 levels(retc18_uno$rubro_retc)
+names(retc18_uno$rubro_retc)
 
 retc18_uno<-retc18_uno %>% 
   select(-ciiu4)
 
-glimpse(retc18_uno)
+
 
 retc18_uno<-retc18_uno %>% 
   mutate(valorizacion_eliminacion=as_factor(valorizacion_eliminacion),
@@ -95,10 +101,12 @@ write.csv2(retc18_uno,file="retc18_uno.csv", row.names = FALSE)
 # RETC2019--------
 
 glimpse(retc19_uno)
+levels(retc19_uno$ciiu4)
 
 retc19_uno<-retc19_uno %>% 
   mutate(valorizacion_eliminacion=as_factor(valorizacion_eliminacion),
          tratamiento=as_factor(tratamiento),
+         ciiu4=as_factor(ciiu4),
          declaracion_estimacion=as_factor(declaracion_estimacion),
          nombre_establecimiento=as_factor(nombre_establecimiento),
          nombre_ler=as_factor(nombre_ler),
@@ -183,7 +191,7 @@ glimpse(retc20_cinco)
 
 write.csv2(retc20_cinco,file="retc20_uno.csv", row.names = FALSE)
 
-rm(retc17,retc18,retc19,retc20)
+
 
 #RETC2022--------------------------------
 #select. rename, mutate
@@ -203,7 +211,7 @@ retc22_cuatro<-retc22_uno %>%
          subcapitulo_ler= str_replace(subcapitulo_ler,"\\d\\d\\s\\|\\s",""),
          nombre_ler=str_replace(nombre_ler, "\\d\\d\\s\\d\\d\\s\\d\\d\\s\\|\\s",""))
 
-glimpse(retc22_cinco)
+glimpse(retc22_cuatro)
 glimpse(retc18_uno)
 # Reorden de columnas
 retc22_cinco <- retc22_cuatro %>% 
@@ -252,7 +260,7 @@ glimpse(retc20_cinco)
 
 write.csv2(retc20_cinco,file="retc20_uno.csv", row.names = FALSE)
 
-rm(retc17,retc18,retc19,retc20)
+
 #BASE DE DATOS RETC INDUSTRIALES
 
 #INDUSTRIALES RETC 2017-----
