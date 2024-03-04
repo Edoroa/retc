@@ -4,6 +4,7 @@ library(tidyverse)
 library(gitcreds)
 library(usethis)
 
+library(arsenal)
 #Bases de datos RETC-MUNICIPALES----
 retc17<-read.csv2("2017.csv", stringsAsFactors = FALSE)
 retc18<-read.csv2("2018.csv", stringsAsFactors = FALSE)  
@@ -49,8 +50,9 @@ rm(retc17, retc18, retc19, retc20, retc21, retc22)
 # RETC2017------
 
 names(retc17_uno)
-glimpse(retc17_uno)
-levels(retc17_uno$razon_social)
+names(retc18_uno) # Comparativo de información por columnas
+glimpse(retc18_uno)
+levels(retc18_uno$ciiu4)
 
 retc17_uno<-retc17_uno%>% 
   mutate(valorizacion_eliminacion=as_factor(valorizacion_eliminacion),
@@ -73,16 +75,13 @@ write.csv2(retc17_uno,file="retc17_uno.csv", row.names = FALSE)
 glimpse(retc18_uno)
 levels(retc18_uno$rubro_retc)
 names(retc18_uno$rubro_retc)
-
-retc18_uno<-retc18_uno %>% 
-  select(-ciiu4)
-
+levels(retc18_uno$ciiu4)
 
 
 retc18_uno<-retc18_uno %>% 
   mutate(valorizacion_eliminacion=as_factor(valorizacion_eliminacion),
          rubro_retc=as_factor(rubro_retc),
-         #ciiu4=as_factor(ciiu4),
+         ciiu4=as_factor(ciiu4),
          tratamiento=as_factor(tratamiento),
          declaracion_estimacion=as_factor(declaracion_estimacion),
          nombre_establecimiento=as_factor(nombre_establecimiento),
@@ -116,10 +115,16 @@ retc19_uno<-retc19_uno %>%
          tipo_o_rol_declarante=as_factor(tipo_o_rol_declarante))
 
 
-retc19_uno<-retc19_uno %>% 
+retc19_uno<-retc19_uno %>% #sacamos columnas de 28 columnas, pasamos a 26
   select(-c(numero_capitulo, numero_subcapitulo, numero_ler)) %>% 
   relocate(razon_social, .before=nombre_establecimiento)
 
+comparedf(retc18_uno, retc19_uno) #Arsenal package
+summary(comparedf(retc18_uno, retc19_uno))
+
+
+retc19_uno <- retc19_uno %>%          
+  relocate("razon_social", .before=id_establecimiento_vu )
 
 write.csv2(retc19_uno,file="retc19_uno.csv", row.names = FALSE)
 
@@ -127,6 +132,10 @@ glimpse(retc20_uno)
 
 #RETC2020--------------------------------
 #select. rename, mutate
+
+comparedf(retc19_uno, retc20_uno)
+summary(comparedf(retc19_uno, retc20_cuatro))
+
 
 retc20_uno<-as_tibble(retc20_uno)
 
@@ -145,7 +154,21 @@ retc20_cuatro<-retc20_uno %>%
          tipo_o_rol_declarante=rol_declarante) %>% 
   mutate(capitulo_ler= str_replace(capitulo_ler,"\\d\\d\\s\\|\\s",""), 
          subcapitulo_ler= str_replace(subcapitulo_ler,"\\d\\d\\s\\|\\s",""),
-        nombre_ler=str_replace(nombre_ler, "\\d\\d\\s\\d\\d\\s\\d\\d\\s\\|\\s",""))
+        nombre_ler=str_replace(nombre_ler, "\\d\\d\\s\\d\\d\\s\\d\\d\\s\\|\\s","")) %>% 
+  mutate(tipo_o_rol_declarante=as_factor(tipo_o_rol_declarante),
+         razon_social=as_factor(razon_social),
+         ciiu4=as_factor(ciiu4),
+         declaracion_estimacion=as_factor(declaracion_estimacion),
+         nombre_establecimiento=as_factor(nombre_establecimiento),
+         nombre_ler=as_factor(nombre_ler),
+         capitulo_ler=as.character(capitulo_ler), 
+         subcapitulo_ler=as.character(subcapitulo_ler),
+         region=as_factor(region),
+         tipo_o_rol_declarante=as_factor(tipo_o_rol_declarante),
+         id_establecimiento_vu= as.numeric(id_establecimiento_vu)
+         
+)
+  
 
 # Reorden de columnas
 retc20_cinco <- retc20_cuatro %>% 
@@ -167,7 +190,7 @@ retc20_cinco <- retc20_cinco %>%
   relocate("ciiu6", .before=ciiu4)
 
 retc20_cinco <- retc20_cinco %>%          
-  relocate("ciiu4", .after=id_establecimiento_vu )
+  relocate("razon_social", .before=id_establecimiento_vu )
 
 retc20_cinco <- retc20_cinco %>%          
   relocate("region", .after=ciiu4 )
@@ -200,7 +223,7 @@ glimpse(retc22_uno)
 
 retc22_uno<-as_tibble(retc22_uno)
 
-retc22_cuatro<-retc22_uno %>% 
+retc22_dos<-retc22_uno %>% 
   select(-c(rut_razon_social,ciiu6,ler_codigo, entrada_salida,id_vu_trazabilidad, x,id_tratamiento_nivel_3,
             id_tratamiento_nivel_1,tratamiento_nivel_3,tratamiento_nivel_1)) %>% 
   rename(coordenada_norte=latitud,
@@ -211,26 +234,30 @@ retc22_cuatro<-retc22_uno %>%
          subcapitulo_ler= str_replace(subcapitulo_ler,"\\d\\d\\s\\|\\s",""),
          nombre_ler=str_replace(nombre_ler, "\\d\\d\\s\\d\\d\\s\\d\\d\\s\\|\\s",""))
 
-glimpse(retc22_cuatro)
-glimpse(retc18_uno)
+glimpse(retc22_dos)
+glimpse(retc20_cinco) # Comparamos las las bases de datos para ver si la retc22 BD se parece  ala retc 2020_cinco
 # Reorden de columnas
-retc22_cinco <- retc22_cuatro %>% 
+retc22_tres <- retc22_dos %>% 
   relocate("ano", .before=capitulo_ler)
 
-retc22_seis <- retc22_cinco %>% 
-  relocate("id_establecimiento", .before=coordenada_norte)
+retc22_tres <- retc22_tres %>% 
+  relocate("id_establecimiento_vu", .before=coordenada_norte)
 
-retc22_cinco <- retc202_cinco %>%          
+retc22_tres <- retc22_dos %>%          
   relocate("coordenada_norte", .before=id_comuna )
 
-retc22_cinco <- retc20_cinco %>%          
+retc22_tres <- retc22_dos %>%          
   relocate("razon_social", .after=tipo_o_rol_declarante)
 
 
 
-retc20_cinco <- retc20_cinco %>%          
+retc22_tres <- retc22_dos %>%          
   relocate("nombre_establecimiento", .after=razon_social)
 
+glimpse(retc22_tres)
+glimpse(retc18_uno)
+glimpse(retc19_uno)
+glimpse(retc22_tres)
 
 retc20_cinco <- retc20_cinco %>%          
   relocate("ciiu6", .before=ciiu4)
