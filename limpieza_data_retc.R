@@ -363,7 +363,7 @@ generadores19<-generadores19%>%
 write.csv2(generadores19,file="generadores19.csv", row.names = FALSE)
 
 #INDUSTRIALES RETC2020----
-
+glimpse(generadores20)
 generadores20<- industriales20 %>% 
   clean_names()%>% 
   select(-c(numero_ler, numero_subcapitulo_ler, numero_capitulo_ler))
